@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.transitmovementstraderauthorization.config
+package departuresPrivateBeta.models
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.libs.json.{Json, OWrites}
 
-@Singleton
-class AppConfig @Inject() (
-  config: Configuration,
-  servicesConfig: ServicesConfig
-) {
+sealed trait PrivateBetaCheckResponse
+object NotEnrolledInPrivateBeta extends PrivateBetaCheckResponse
 
-  val authBaseUrl: String = servicesConfig.baseUrl("auth")
+object PrivateBetaCheckResponse {
 
-  val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
-  val graphiteHost: String     = config.get[String]("microservice.metrics.graphite.host")
+  implicit val writes: OWrites[PrivateBetaCheckResponse] =
+    _ match {
+      case NotEnrolledInPrivateBeta =>
+        Json.obj(
+          "feature"             -> "departures-private-beta",
+          "authorizationResult" -> "NOT_AUTHORIZED"
+        )
+    }
 }
