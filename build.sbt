@@ -50,7 +50,6 @@ lazy val scoverageSettings = Def.settings(
     """.*\.Reverse[^.]*""",
     "testonly",
     """.*\.config.*""",
-    """models.Eori""",
-    """departuresPrivateBeta\.models*"""
+    """models*"""
   ).mkString(";")
 )
