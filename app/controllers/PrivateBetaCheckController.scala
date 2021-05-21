@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package departuresPrivateBeta.controllers
+package controllers
 
-import departuresPrivateBeta.models.{NotEnrolledInPrivateBeta, PrivateBetaCheck, PrivateBetaCheckResponse}
-import play.api.libs.json.Json
+import models.PrivateBetaCheck
 import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 

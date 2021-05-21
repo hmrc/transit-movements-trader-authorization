@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package departuresPrivateBeta.models
+package models
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{Json, Reads}
 
-sealed trait PrivateBetaCheckResponse
-object NotEnrolledInPrivateBeta extends PrivateBetaCheckResponse
+case class PrivateBetaCheck(eori: Eori)
 
-object PrivateBetaCheckResponse {
+object PrivateBetaCheck {
 
-  implicit val writes: OWrites[PrivateBetaCheckResponse] =
-    _ match {
-      case NotEnrolledInPrivateBeta =>
-        Json.obj(
-          "feature"             -> "departures-private-beta",
-          "authorizationResult" -> "NOT_AUTHORIZED"
-        )
-    }
+  implicit val reads: Reads[PrivateBetaCheck] = Json.reads[PrivateBetaCheck]
 }
