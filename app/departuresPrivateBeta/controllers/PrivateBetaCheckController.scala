@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.transitmovementstraderauthorization.config
+package departuresPrivateBeta.controllers
+
+import departuresPrivateBeta.models.{NotEnrolledInPrivateBeta, PrivateBetaCheck, PrivateBetaCheckResponse}
+import play.api.libs.json.Json
+import play.api.mvc.{Action, ControllerComponents}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import scala.concurrent.Future
 
-@Singleton
-class AppConfig @Inject() (
-  config: Configuration,
-  servicesConfig: ServicesConfig
-) {
+@Singleton()
+class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
 
-  val authBaseUrl: String = servicesConfig.baseUrl("auth")
-
-  val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
-  val graphiteHost: String     = config.get[String]("microservice.metrics.graphite.host")
+  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
+    implicit request =>
+      Future.successful(NoContent)
+  }
 }

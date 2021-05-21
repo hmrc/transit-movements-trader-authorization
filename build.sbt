@@ -2,7 +2,6 @@ import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import scoverage.ScoverageKeys
 
-
 val appName = "transit-movements-trader-authorization"
 
 val silencerVersion = "1.7.3"
@@ -10,10 +9,10 @@ val silencerVersion = "1.7.3"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
-    majorVersion                     := 0,
-    scalaVersion                     := "2.12.13",
-    PlayKeys.playDefaultPort         := 9498,
-    libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
+    majorVersion             := 0,
+    scalaVersion             := "2.12.13",
+    PlayKeys.playDefaultPort := 9498,
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     // ***************
     // Use the silencer plugin to suppress warnings
     scalacOptions += "-P:silencer:pathFilters=routes",
@@ -51,6 +50,7 @@ lazy val scoverageSettings = Def.settings(
     """.*\.Reverse[^.]*""",
     "testonly",
     """.*\.config.*""",
+    """models.Eori""",
+    """departuresPrivateBeta\.models*"""
   ).mkString(";")
 )
-
