@@ -17,12 +17,11 @@
 package departuresPrivateBeta.models
 
 import models.Eori
-import play.api.libs.json.Reads
+import play.api.libs.json.{Json, Reads}
 
 case class PrivateBetaCheck(eori: Eori)
 
 object PrivateBetaCheck {
 
-  implicit val reads: Reads[PrivateBetaCheck] =
-    _.validate[Eori].map(PrivateBetaCheck(_))
+  implicit val reads: Reads[PrivateBetaCheck] = Json.reads[PrivateBetaCheck]
 }
