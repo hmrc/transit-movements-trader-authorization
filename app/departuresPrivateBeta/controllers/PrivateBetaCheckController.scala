@@ -29,6 +29,6 @@ class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends Ba
 
   def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
     implicit request =>
-      Future.successful(NotFound(Json.toJsObject(NotEnrolledInPrivateBeta: PrivateBetaCheckResponse)))
+      Future.successful(NoContent)
   }
 }

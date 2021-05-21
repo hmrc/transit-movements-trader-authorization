@@ -35,10 +35,10 @@ class PrivateBetaCheckControllerSpec extends AnyFreeSpec with Matchers {
   private val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents())
 
   "GET /features/private-beta" - {
-    "return 404" in {
+    "return 204" in {
       val result: Future[Result] = controller.check()(fakeRequest)
 
-      status(result) mustBe Status.NOT_FOUND
+      status(result) mustBe Status.NO_CONTENT
     }
   }
 }
