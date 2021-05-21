@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package departuresPrivateBeta.models
+package controllers
 
-import models.Eori
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.JsObject
+import play.api.mvc.{Action, ControllerComponents}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-case class PrivateBetaCheck(eori: Eori)
+import javax.inject.Inject
+import scala.concurrent.Future
 
-object PrivateBetaCheck {
+class PrivateBetaUsersController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
 
-  implicit val reads: Reads[PrivateBetaCheck] = Json.reads[PrivateBetaCheck]
+  def add(): Action[JsObject] = Action.async(parse.json[JsObject])(
+    _ => Future.successful(Created)
+  )
+
 }

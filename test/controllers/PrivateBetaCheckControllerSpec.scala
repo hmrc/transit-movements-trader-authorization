@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package departuresPrivateBeta.controllers
+package controllers
 
-import departuresPrivateBeta.models.PrivateBetaCheck
-import models.Eori
+import models.{Eori, PrivateBetaCheck}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.http.Status

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package departuresPrivateBeta.models
+package models
 
 import play.api.libs.json.{Json, OWrites}
 
