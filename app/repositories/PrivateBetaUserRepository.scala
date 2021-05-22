@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package repositories
 
-import play.api.libs.json.{Json, Reads}
+import models._
 
-case class PrivateBetaCheck(eori: Eori)
+import scala.concurrent.Future
 
-object PrivateBetaCheck {
+trait PrivateBetaUserRepository {
 
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
+  def addUser(user: User): Future[User]
+
+  def getUser(user: UserId): Future[Option[User]]
+
+  def getUsers: Future[Seq[User]]
+
+  def updateUserStatus(userId: UserId, status: Status): Future[Option[User]]
+
+  def removeUser(userId: UserId): Future[Boolean]
 
 }

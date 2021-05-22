@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package repositories
 
-import play.api.libs.json.{Json, Reads}
+private[repositories] object IndexLogMessages {
 
-case class PrivateBetaCheck(eori: Eori)
+  def indexManagerResultLogMessage(collectionName: String, indexName: String, result: Boolean): String =
+    if (result) {
+      s"[IndexManagement][$collectionName] New index created for `$indexName`"
+    } else {
+      s"[IndexManagement][$collectionName] Index already for `$indexName`"
+    }
 
-object PrivateBetaCheck {
-
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
+  def indexManagerFailedKey(collectionName: String) = s"[IndexManagement][$collectionName]"
 
 }

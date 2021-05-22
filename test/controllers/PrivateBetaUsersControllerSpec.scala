@@ -16,8 +16,7 @@
 
 package controllers
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import base.SpecBase
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -26,7 +25,7 @@ import play.api.test._
 
 import scala.concurrent.Future
 
-class PrivateBetaUsersControllerSpec extends AnyFreeSpec with Matchers {
+class PrivateBetaUsersControllerSpec extends SpecBase {
 
   private val fakeRequest: FakeRequest[JsObject] = FakeRequest("POST", routes.PrivateBetaUsersController.add().url)
     .withBody(Json.obj())

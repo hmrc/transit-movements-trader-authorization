@@ -16,11 +16,31 @@
 
 package models
 
-import play.api.libs.json.{JsString, Reads, Writes}
+import play.api.libs.json.{__, Json, OWrites, Reads}
 
 case class Eori(value: String)
 
 object Eori {
-  implicit val writes: Writes[Eori] = eori => JsString(eori.value)
-  implicit val reads: Reads[Eori]   = _.validate[String].map(Eori(_))
+
+  object DB {
+
+    implicit val writesEori: OWrites[Eori] =
+      eori =>
+        Json.obj(
+          "eori" -> eori.value
+        )
+
+    implicit val readsEori: Reads[Eori] =
+      (__ \ User.Constants.FieldNames.eori)
+        .read[String]
+        .map(Eori(_))
+
+  }
+
+  object API {
+
+    implicit val readsEori: Reads[Eori] =
+      DB.readsEori
+  }
+
 }

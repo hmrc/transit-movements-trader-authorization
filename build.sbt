@@ -1,6 +1,7 @@
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import scoverage.ScoverageKeys
+import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "transit-movements-trader-authorization"
 
@@ -24,7 +25,9 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(publishingSettings: _*)
   .configs(IntegrationTest)
+//  .settings(DefaultBuildSettings.integrationTestSettings())
   .settings(integrationTestSettings(): _*)
+  .settings(inConfig(IntegrationTest)(itSettings))
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(scoverageSettings)
 
@@ -48,8 +51,23 @@ lazy val scoverageSettings = Def.settings(
     """.*\.Routes""",
     """.*\.RoutesPrefix""",
     """.*\.Reverse[^.]*""",
-    "testonly",
+    """.*testonly\.*""",
     """.*\.config.*""",
     """models*"""
   ).mkString(";")
+)
+
+lazy val itSettings = Def.settings(
+  // Must fork so that config system properties are set
+  fork := true,
+//  parallelExecution := false,
+  unmanagedSourceDirectories ++= Seq(
+    baseDirectory.value / "it",
+    baseDirectory.value / "test" / "base"
+  ),
+  unmanagedResourceDirectories += (baseDirectory.value / "it" / "resources"),
+  javaOptions ++= Seq(
+    "-Dconfig.resource=it.application.conf",
+    "-Dlogger.resource=logback-test.xml"
+  )
 )

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package repositories
 
-import play.api.libs.json.{Json, Reads}
+import play.api.inject._
 
-case class PrivateBetaCheck(eori: Eori)
-
-object PrivateBetaCheck {
-
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
-
-}
+class RepositoryModule
+    extends SimpleModule(
+      (_, _) =>
+        Seq(
+          bind[PrivateBetaUserRepository].to[ReactiveMongoPrivateBetaUserRepository],
+          bind[PrivateBetaUserCollectionIndexManager].to[DefaultPrivateBetaUserCollectionIndexManager].eagerly()
+        )
+    )

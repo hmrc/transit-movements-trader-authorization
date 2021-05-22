@@ -16,13 +16,25 @@
 
 package models
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json._
 
-case class PrivateBetaCheck(eori: Eori)
+case class UserId(value: String)
 
-object PrivateBetaCheck {
+object UserId {
 
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
+  object DB {
+
+    implicit val writesUserId: OWrites[UserId] =
+      userId =>
+        Json.obj(
+          User.Constants.FieldNames.userId -> userId.value
+        )
+
+    implicit val readsUserId: Reads[UserId] =
+      (__ \ User.Constants.FieldNames.userId)
+        .read[String]
+        .map(UserId(_))
+
+  }
 
 }

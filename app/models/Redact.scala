@@ -16,13 +16,22 @@
 
 package models
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
 
-case class PrivateBetaCheck(eori: Eori)
+trait Redact[A] {
 
-object PrivateBetaCheck {
+  def redact[B <: JsValue](unredacted: JsValue): B
 
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
+}
 
+object RedactJsObject {
+
+  def apply[A](a: A)(implicit owrites: OWrites[A], redactor: Redact[A]): JsObject =
+    redactor.redact[JsObject](Json.toJsObject(a))
+}
+
+object RedactJsValue {
+
+  def apply[A](a: A)(implicit writes: Writes[A], redactor: Redact[A]): JsValue =
+    redactor.redact[JsValue](Json.toJson(a))
 }

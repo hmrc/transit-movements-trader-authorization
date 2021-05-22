@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package logging
 
-import play.api.libs.json.{Json, Reads}
+import play.api.Logger
 
-case class PrivateBetaCheck(eori: Eori)
+trait Logging {
 
-object PrivateBetaCheck {
-
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
-
+  protected val logger: Logger = Logger(s"logger.application.${this.getClass.getCanonicalName}")
 }

@@ -16,13 +16,33 @@
 
 package models
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json._
 
-case class PrivateBetaCheck(eori: Eori)
+sealed trait Status
+case object Active extends Status
+case object Inactive extends Status
 
-object PrivateBetaCheck {
+object Status {
 
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
+  object DB {
+
+    implicit val writesStatus: OWrites[Status] =
+      status =>
+        Json.obj(
+          User.Constants.FieldNames.status -> status.toString
+        )
+
+    implicit val readsStatus: Reads[Status] =
+      (__ \ User.Constants.FieldNames.status)
+        .read[String]
+        .filter(
+          Seq("Active", "Inactive").contains(_)
+        )
+        .map {
+          case x if x == "Active"   => Active
+          case x if x == "Inactive" => Inactive
+        }
+
+  }
 
 }

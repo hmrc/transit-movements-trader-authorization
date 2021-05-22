@@ -16,9 +16,8 @@
 
 package controllers
 
+import base.SpecBase
 import models.{Eori, PrivateBetaCheck}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import play.api.http.Status
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -26,7 +25,7 @@ import play.api.test._
 
 import scala.concurrent.Future
 
-class PrivateBetaCheckControllerSpec extends AnyFreeSpec with Matchers {
+class PrivateBetaCheckControllerSpec extends SpecBase {
 
   private val fakeRequest = FakeRequest("GET", "/")
     .withBody(PrivateBetaCheck(Eori("eoriValue")))
