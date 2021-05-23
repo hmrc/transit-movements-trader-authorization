@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.requests
 
-import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
+import models.domain.Eori
+import play.api.libs.json.{Json, Reads}
+import models.domain.Eori.API.readsEori
 
-trait Redact[A, B <: JsValue] {
+case class NewUserDetails(name: String, eori: Eori)
 
-  def redact(a: A): B
+object NewUserDetails {
 
-}
+  implicit val reads: Reads[NewUserDetails] = Json.reads[NewUserDetails]
 
-object RedactedResponse {
-
-  def apply[A](a: A)(implicit owrites: OWrites[A], redactor: Redact[A, JsObject]): JsObject =
-    redactor.redact(a)
-}
-
-object RedactSingleValue {
-
-  def apply[A](a: A)(implicit writes: Writes[A], redactor: Redact[A, JsValue]): JsValue =
-    redactor.redact(a)
 }

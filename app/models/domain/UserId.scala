@@ -16,11 +16,17 @@
 
 package models.domain
 
+import models.Redact
 import play.api.libs.json._
+import play.api.mvc.PathBindable
+
+import java.util.UUID
 
 case class UserId(value: String)
 
 object UserId {
+
+  def generateFromUUID(): UserId = UserId(UUID.randomUUID().toString)
 
   object DB {
 
@@ -35,6 +41,15 @@ object UserId {
         .read[String]
         .map(UserId(_))
 
+  }
+
+  implicit val pathBindableMessageId: PathBindable[UserId] = new PathBindable[UserId] {
+
+    override def bind(key: String, value: String): Either[String, UserId] =
+      Right(UserId(value))
+
+    override def unbind(key: String, value: UserId): String =
+      value.value.toString
   }
 
 }

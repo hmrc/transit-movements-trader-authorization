@@ -16,22 +16,18 @@
 
 package models
 
-import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
+import models.domain.UserId
 
-trait Redact[A, B <: JsValue] {
+import java.util.UUID
 
-  def redact(a: A): B
+trait UserIdProvider {
+
+  def generate: UserId
 
 }
 
-object RedactedResponse {
+object UserIdProviderFromUUID extends UserIdProvider {
 
-  def apply[A](a: A)(implicit owrites: OWrites[A], redactor: Redact[A, JsObject]): JsObject =
-    redactor.redact(a)
-}
+  override def generate: UserId = UserId(UUID.randomUUID().toString)
 
-object RedactSingleValue {
-
-  def apply[A](a: A)(implicit writes: Writes[A], redactor: Redact[A, JsValue]): JsValue =
-    redactor.redact(a)
 }

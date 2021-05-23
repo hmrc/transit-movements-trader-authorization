@@ -17,6 +17,7 @@
 package models.domain
 
 import Status.DB._
+import models.{Redact, RedactSingleValue, RedactedResponse}
 import models.domain.UserId.DB._
 import models.domain.Eori.DB._
 import play.api.libs.functional.syntax._
@@ -65,4 +66,19 @@ object User {
         __.write[Eori] and
         __.write[Status]
     )(unlift(User.unapply))
+
+  implicit val redactUser: Redact[User, JsObject] =
+    user =>
+      Json.obj(
+        "userId" -> user.userId.value,
+        "name"   -> user.name,
+        "status" -> user.status.toString
+      )
+
+  implicit val redactUsers: Redact[Seq[User], JsObject] =
+    users =>
+      Json.obj(
+        "users" ->
+          users.map(RedactedResponse(_))
+      )
 }

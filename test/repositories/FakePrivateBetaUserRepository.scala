@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package repositories
 
-import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
+import models.domain.{Status, User, UserId}
 
-trait Redact[A, B <: JsValue] {
+import scala.concurrent.Future
 
-  def redact(a: A): B
+class FakePrivateBetaUserRepository extends PrivateBetaUserRepository {
+  override def addUser(user: User): Future[User] = ???
 
-}
+  override def getUser(user: UserId): Future[Option[User]] = ???
 
-object RedactedResponse {
+  override def getUsers: Future[Seq[User]] = ???
 
-  def apply[A](a: A)(implicit owrites: OWrites[A], redactor: Redact[A, JsObject]): JsObject =
-    redactor.redact(a)
-}
+  override def updateUserStatus(userId: UserId, status: Status): Future[Option[User]] = ???
 
-object RedactSingleValue {
-
-  def apply[A](a: A)(implicit writes: Writes[A], redactor: Redact[A, JsValue]): JsValue =
-    redactor.redact(a)
+  override def removeUser(userId: UserId): Future[Boolean] = ???
 }

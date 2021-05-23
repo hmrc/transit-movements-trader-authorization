@@ -16,22 +16,8 @@
 
 package models
 
-import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
+import models.domain.UserId
 
-trait Redact[A, B <: JsValue] {
-
-  def redact(a: A): B
-
-}
-
-object RedactedResponse {
-
-  def apply[A](a: A)(implicit owrites: OWrites[A], redactor: Redact[A, JsObject]): JsObject =
-    redactor.redact(a)
-}
-
-object RedactSingleValue {
-
-  def apply[A](a: A)(implicit writes: Writes[A], redactor: Redact[A, JsValue]): JsValue =
-    redactor.redact(a)
+case class FakeUserIdProvider(private val userId: UserId) extends UserIdProvider {
+  def generate: UserId = userId
 }

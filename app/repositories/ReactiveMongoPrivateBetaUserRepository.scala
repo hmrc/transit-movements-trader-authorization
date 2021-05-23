@@ -33,6 +33,9 @@ private[repositories] class ReactiveMongoPrivateBetaUserRepository @Inject() (co
       _.insert(false)
         .one(Json.toJsObject(user))
         .map(
+          x => x.writeErrors
+        )
+        .map(
           _ => user
         )
     }

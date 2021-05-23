@@ -1,3 +1,4 @@
+import play.sbt.routes.RoutesKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import scoverage.ScoverageKeys
@@ -10,10 +11,13 @@ val silencerVersion = "1.7.3"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
-    majorVersion             := 0,
-    scalaVersion             := "2.12.13",
-    PlayKeys.playDefaultPort := 9498,
+    majorVersion := 0,
+    scalaVersion := "2.12.13",
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+    PlayKeys.playDefaultPort := 9498,
+    RoutesKeys.routesImport ++= Seq(
+      "models.domain._"
+    ),
     // ***************
     // Use the silencer plugin to suppress warnings
     scalacOptions += "-P:silencer:pathFilters=routes",
@@ -55,6 +59,13 @@ lazy val scoverageSettings = Def.settings(
     """.*\.config.*""",
     """models*"""
   ).mkString(";")
+)
+
+lazy val testSettings = Def.settings(
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf",
+    "-Dlogger.resource=logback-test.xml"
+  )
 )
 
 lazy val itSettings = Def.settings(

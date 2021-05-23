@@ -17,12 +17,14 @@
 package models.domain
 
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 sealed trait Status
-case object Active extends Status
-case object Inactive extends Status
 
 object Status {
+
+  case object Active extends Status
+  case object Inactive extends Status
 
   object DB {
 
@@ -43,6 +45,16 @@ object Status {
           case x if x == "Inactive" => Inactive
         }
 
+  }
+
+  object API {
+
+    implicit val readsStatus: Reads[Status] =
+      (__ \ "op")
+        .read[String]
+        .filter(_ == "replace")
+        .andKeep((__ \ "path").read[String].filter(_ == "/status"))
+        .andKeep((__ \ "value").read[Status](DB.readsStatus))
   }
 
 }
