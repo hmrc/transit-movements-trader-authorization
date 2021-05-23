@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package models.requests
 
+import models.domain.Eori
 import play.api.libs.json.{Json, Reads}
 
 case class PrivateBetaCheck(eori: Eori)

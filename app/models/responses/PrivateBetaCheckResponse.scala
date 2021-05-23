@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package models.responses
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OWrites}
 
-case class UserId(value: String)
+sealed trait PrivateBetaCheckResponse
+object NotEnrolledInPrivateBeta extends PrivateBetaCheckResponse
 
-object UserId {
+object PrivateBetaCheckResponse {
 
-  object DB {
-
-    implicit val writesUserId: OWrites[UserId] =
-      userId =>
+  implicit val writes: OWrites[PrivateBetaCheckResponse] =
+    _ match {
+      case NotEnrolledInPrivateBeta =>
         Json.obj(
-          User.Constants.FieldNames.userId -> userId.value
+          "feature"             -> "departures-private-beta",
+          "authorizationResult" -> "NOT_AUTHORIZED"
         )
-
-    implicit val readsUserId: Reads[UserId] =
-      (__ \ User.Constants.FieldNames.userId)
-        .read[String]
-        .map(UserId(_))
-
-  }
-
+    }
 }

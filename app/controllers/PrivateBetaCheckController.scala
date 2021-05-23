@@ -16,7 +16,7 @@
 
 package controllers
 
-import models.PrivateBetaCheck
+import models.requests.PrivateBetaCheck
 import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 

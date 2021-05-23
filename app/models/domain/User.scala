@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package models.domain
 
-import play.api.libs.json._
+import Status.DB._
+import models.domain.UserId.DB._
+import models.domain.Eori.DB._
 import play.api.libs.functional.syntax._
-import models.UserId.DB._
-import models.Eori.DB._
-import models.Status.DB._
+import play.api.libs.json._
 
 final case class User(
   userId: UserId,
@@ -66,22 +66,3 @@ object User {
         __.write[Status]
     )(unlift(User.unapply))
 }
-
-//case class IndividualUserSanitized(
-//  id: UserId,
-//  name: String,
-//  state: Status
-//)
-//
-//object IndividualUserSanitized {
-//
-//  def sanitize(indiv: User): IndividualUserSanitized =
-//    IndividualUserSanitized(
-//      id = indiv.userId,
-//      name = indiv.name,
-//      state = indiv.state
-//    )
-//
-//  def sanitize(indivs: Seq[User]): Seq[IndividualUserSanitized] =
-//    indivs.map(sanitize)
-//}

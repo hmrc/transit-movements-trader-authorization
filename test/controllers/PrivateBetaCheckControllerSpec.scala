@@ -17,7 +17,8 @@
 package controllers
 
 import base.SpecBase
-import models.{Eori, PrivateBetaCheck}
+import models.domain.Eori
+import models.requests.PrivateBetaCheck
 import play.api.http.Status
 import play.api.mvc.Result
 import play.api.test.Helpers._

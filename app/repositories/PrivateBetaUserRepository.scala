@@ -16,7 +16,7 @@
 
 package repositories
 
-import models._
+import models.domain.{Status, User, UserId}
 
 import scala.concurrent.Future
 

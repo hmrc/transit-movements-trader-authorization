@@ -17,7 +17,8 @@
 package repositories
 
 import base.SpecBase
-import models._
+import models.{domain, _}
+import models.domain.{Active, Eori, Inactive, User, UserId}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
@@ -77,14 +78,14 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
 
   "getUser" - {
     "gets the user with the matching id" in {
-      val user1 = User(
+      val user1 = domain.User(
         UserId("id1"),
         "testGroupName",
         Eori("indivUserEori1"),
         Active
       )
 
-      val user2 = User(
+      val user2 = domain.User(
         UserId("id2"),
         "testGroupName",
         Eori("indivUserEori2"),
@@ -105,14 +106,14 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
   "getUsers" - {
 
     "returns all users" in {
-      val user1 = User(
+      val user1 = domain.User(
         UserId("id1"),
         "testGroupName",
         Eori("indivUserEori1"),
         Active
       )
 
-      val user2 = User(
+      val user2 = domain.User(
         UserId("id2"),
         "testGroupName",
         Eori("indivUserEori2"),
@@ -130,14 +131,14 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
 
   "removeUserGroup" - {
     "removed data for a only the given user" in {
-      val user1 = User(
+      val user1 = domain.User(
         UserId("id1"),
         "testGroupName",
         Eori("indivUserEori1"),
         Active
       )
 
-      val user2 = User(
+      val user2 = domain.User(
         UserId("id2"),
         "testGroupName",
         Eori("indivUserEori2"),
@@ -159,14 +160,14 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
 
   "updateUserStatus" - {
     "updates the status of the user with matching userId" in {
-      val user1 = User(
+      val user1 = domain.User(
         UserId("id1"),
         "testGroupName",
         Eori("indivUserEori1"),
         Active
       )
 
-      val user2 = User(
+      val user2 = domain.User(
         UserId("id2"),
         "testGroupName",
         Eori("indivUserEori2"),
@@ -193,14 +194,14 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
 
   "removeUser" - {
     "removes the user with matching userId" in {
-      val user1 = User(
+      val user1 = domain.User(
         UserId("id1"),
         "testGroupName",
         Eori("indivUserEori1"),
         Active
       )
 
-      val user2 = User(
+      val user2 = domain.User(
         UserId("id2"),
         "testGroupName",
         Eori("indivUserEori2"),

@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-package models
+package models.domain
 
-import play.api.libs.json.{__, Json, OWrites, Reads}
+import play.api.libs.json._
 
-case class Eori(value: String)
+sealed trait Status
+case object Active extends Status
+case object Inactive extends Status
 
-object Eori {
+object Status {
 
   object DB {
 
-    implicit val writesEori: OWrites[Eori] =
-      eori =>
+    implicit val writesStatus: OWrites[Status] =
+      status =>
         Json.obj(
-          "eori" -> eori.value
+          User.Constants.FieldNames.status -> status.toString
         )
 
-    implicit val readsEori: Reads[Eori] =
-      (__ \ User.Constants.FieldNames.eori)
+    implicit val readsStatus: Reads[Status] =
+      (__ \ User.Constants.FieldNames.status)
         .read[String]
-        .map(Eori(_))
+        .filter(
+          Seq("Active", "Inactive").contains(_)
+        )
+        .map {
+          case x if x == "Active"   => Active
+          case x if x == "Inactive" => Inactive
+        }
 
-  }
-
-  object API {
-
-    implicit val readsEori: Reads[Eori] =
-      DB.readsEori
   }
 
 }

@@ -14,34 +14,26 @@
  * limitations under the License.
  */
 
-package models
+package models.domain
 
 import play.api.libs.json._
 
-sealed trait Status
-case object Active extends Status
-case object Inactive extends Status
+case class UserId(value: String)
 
-object Status {
+object UserId {
 
   object DB {
 
-    implicit val writesStatus: OWrites[Status] =
-      status =>
+    implicit val writesUserId: OWrites[UserId] =
+      userId =>
         Json.obj(
-          User.Constants.FieldNames.status -> status.toString
+          User.Constants.FieldNames.userId -> userId.value
         )
 
-    implicit val readsStatus: Reads[Status] =
-      (__ \ User.Constants.FieldNames.status)
+    implicit val readsUserId: Reads[UserId] =
+      (__ \ User.Constants.FieldNames.userId)
         .read[String]
-        .filter(
-          Seq("Active", "Inactive").contains(_)
-        )
-        .map {
-          case x if x == "Active"   => Active
-          case x if x == "Inactive" => Inactive
-        }
+        .map(UserId(_))
 
   }
 

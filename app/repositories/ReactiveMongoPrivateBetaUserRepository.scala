@@ -17,7 +17,7 @@
 package repositories
 
 import com.google.inject.Inject
-import models.{Status, User, UserId}
+import models.domain.{Status, User, UserId}
 import play.api.libs.json.Json
 import reactivemongo.api.Cursor
 import reactivemongo.api.commands.WriteConcern

@@ -17,7 +17,7 @@
 package repositories
 
 import logging.Logging
-import models.User
+import models.domain.User
 import reactivemongo.api.indexes.IndexType
 
 import javax.inject.{Inject, Singleton}
