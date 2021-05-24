@@ -24,16 +24,20 @@ import models.RedactedResponse
 import reactivemongo.core.errors.ReactiveMongoException
 import repositories.PrivateBetaUserRepository
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class PrivateBetaCheckController @Inject()(
                                             cc: ControllerComponents,
                                             repository: PrivateBetaUserRepository
-                                          ) extends BackendController(cc) {
+                                          )(implicit ec: ExecutionContext) extends BackendController(cc) {
 
   def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
     implicit request =>
-      Future.successful(NoContent)
+
+      repository.getUserByEori(request.body.eori).flatMap {
+        case Some(_) => Future.successful(NoContent)
+        case None    => Future.successful(NotFound)
+      }
   }
 }
