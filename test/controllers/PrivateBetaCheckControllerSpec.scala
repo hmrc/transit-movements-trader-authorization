@@ -40,9 +40,8 @@ class PrivateBetaCheckControllerSpec extends SpecBase {
       val user = User(UserId("id"), "name", Eori("eori"), Active)
 
       val repository = new FakePrivateBetaUserRepository {
-        override def getUserByEori(eori: Eori): Future[Option[User]] = {
+        override def getUserByEori(eori: Eori): Future[Option[User]] =
           Future.successful(Some(user))
-        }
       }
 
       val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
@@ -55,9 +54,8 @@ class PrivateBetaCheckControllerSpec extends SpecBase {
     "returns 404 when there is no matching user eori" in {
 
       val repository = new FakePrivateBetaUserRepository {
-        override def getUserByEori(eori: Eori): Future[Option[User]] = {
+        override def getUserByEori(eori: Eori): Future[Option[User]] =
           Future.successful(None)
-        }
       }
 
       val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
