@@ -16,7 +16,7 @@
 
 package repositories
 
-import models.domain.{Status, User, UserId}
+import models.domain.{Eori, Status, User, UserId}
 
 import scala.concurrent.Future
 
@@ -24,7 +24,9 @@ trait PrivateBetaUserRepository {
 
   def addUser(user: User): Future[User]
 
-  def getUser(user: UserId): Future[Option[User]]
+  def getUserByUserId(user: UserId): Future[Option[User]]
+
+  def getUserByEori(eori: Eori): Future[Option[User]]
 
   def getUsers: Future[Seq[User]]
 

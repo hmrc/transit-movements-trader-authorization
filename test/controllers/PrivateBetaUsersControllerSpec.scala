@@ -141,7 +141,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
 
     "returns 200 when there is a matching user" in {
       val repository = new FakePrivateBetaUserRepository {
-        override def getUser(userId: UserId): Future[Option[User]] = Future.successful(Some(user))
+        override def getUserByUserId(userId: UserId): Future[Option[User]] = Future.successful(Some(user))
       }
 
       val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
@@ -154,7 +154,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
 
     "returns 404 when there are no matching users" in {
       val repository = new FakePrivateBetaUserRepository {
-        override def getUser(userId: UserId): Future[Option[User]] = Future.successful(None)
+        override def getUserByUserId(userId: UserId): Future[Option[User]] = Future.successful(None)
       }
 
       val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
@@ -166,7 +166,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
 
     "returns 500 when repository call fails" in {
       val repository = new FakePrivateBetaUserRepository {
-        override def getUser(userId: UserId): Future[Option[User]] = Future.failed(new Exception("DB failure"))
+        override def getUserByUserId(userId: UserId): Future[Option[User]] = Future.failed(new Exception("DB failure"))
       }
 
       val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)

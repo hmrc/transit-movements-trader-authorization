@@ -17,13 +17,16 @@
 package controllers
 
 import base.SpecBase
-import models.domain.Eori
+import models.domain.Status.Active
+import models.domain.{Eori, User, UserId}
 import models.requests.PrivateBetaCheck
 import play.api.http.Status
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
+import repositories.FakePrivateBetaUserRepository
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PrivateBetaCheckControllerSpec extends SpecBase {
@@ -31,13 +34,35 @@ class PrivateBetaCheckControllerSpec extends SpecBase {
   private val fakeRequest = FakeRequest("GET", "/")
     .withBody(PrivateBetaCheck(Eori("eoriValue")))
 
-  private val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents())
-
   "GET /features/private-beta" - {
-    "return 204" in {
+    "returns 204 when there is a matching user eori" in {
+
+      val user = User(UserId("id"), "name", Eori("eori"), Active)
+
+      val repository = new FakePrivateBetaUserRepository {
+        override def getUserByEori(eori: Eori): Future[Option[User]] =
+          Future.successful(Some(user))
+      }
+
+      val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
+
       val result: Future[Result] = controller.check()(fakeRequest)
 
       status(result) mustBe Status.NO_CONTENT
+    }
+
+    "returns 404 when there is no matching user eori" in {
+
+      val repository = new FakePrivateBetaUserRepository {
+        override def getUserByEori(eori: Eori): Future[Option[User]] =
+          Future.successful(None)
+      }
+
+      val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
+
+      val result: Future[Result] = controller.check()(fakeRequest)
+
+      status(result) mustBe Status.NOT_FOUND
     }
   }
 }

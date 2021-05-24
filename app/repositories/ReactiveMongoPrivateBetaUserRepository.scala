@@ -17,7 +17,7 @@
 package repositories
 
 import com.google.inject.Inject
-import models.domain.{Status, User, UserId}
+import models.domain.{Eori, Status, User, UserId}
 import play.api.libs.json.Json
 import reactivemongo.api.Cursor
 import reactivemongo.api.commands.WriteConcern
@@ -40,9 +40,20 @@ private[repositories] class ReactiveMongoPrivateBetaUserRepository @Inject() (co
         )
     }
 
-  override def getUser(userId: UserId): Future[Option[User]] = {
+  override def getUserByUserId(userId: UserId): Future[Option[User]] = {
     val query = Json.obj(
       User.Constants.FieldNames.userId -> userId.value
+    )
+
+    collection().flatMap {
+      _.find(query, None)
+        .one[User]
+    }
+  }
+
+  override def getUserByEori(eori: Eori): Future[Option[User]] = {
+    val query = Json.obj(
+      User.Constants.FieldNames.eori -> eori.value
     )
 
     collection().flatMap {

@@ -16,11 +16,10 @@
 
 package models.domain
 
-import models.Redact
+import java.util.UUID
+
 import play.api.libs.json._
 import play.api.mvc.PathBindable
-
-import java.util.UUID
 
 case class UserId(value: String)
 
@@ -49,7 +48,7 @@ object UserId {
       Right(UserId(value))
 
     override def unbind(key: String, value: UserId): String =
-      value.value.toString
+      value.value
   }
 
 }

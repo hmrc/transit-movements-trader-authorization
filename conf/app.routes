@@ -2,8 +2,9 @@
 
 POST    /features/private-beta                  controllers.PrivateBetaCheckController.check()
 
-POST    /features/private-beta/users            controllers.PrivateBetaUsersController.add()
 GET     /features/private-beta/users            controllers.PrivateBetaUsersController.getUsers()
+POST    /features/private-beta/users            controllers.PrivateBetaUsersController.add()
+
 GET     /features/private-beta/users/:userId    controllers.PrivateBetaUsersController.getUser(userId: UserId)
 DELETE  /features/private-beta/users/:userId    controllers.PrivateBetaUsersController.delete(userId: UserId)
 PATCH   /features/private-beta/users/:userId    controllers.PrivateBetaUsersController.updateUserStatus(userId: UserId)
