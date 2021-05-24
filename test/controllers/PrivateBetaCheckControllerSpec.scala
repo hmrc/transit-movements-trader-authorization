@@ -17,12 +17,13 @@
 package controllers
 
 import base.SpecBase
-import models.domain.Eori
+import models.domain.{Eori, User}
 import models.requests.PrivateBetaCheck
 import play.api.http.Status
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
+import repositories.{FakePrivateBetaUserRepository, PrivateBetaUserRepository}
 
 import scala.concurrent.Future
 
@@ -31,7 +32,12 @@ class PrivateBetaCheckControllerSpec extends SpecBase {
   private val fakeRequest = FakeRequest("GET", "/")
     .withBody(PrivateBetaCheck(Eori("eoriValue")))
 
-  private val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents())
+  val repository = new FakePrivateBetaUserRepository {
+    override def addUser(user: User): Future[User] = Future.successful(user)
+  }
+
+
+  private val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
 
   "GET /features/private-beta" - {
     "return 204" in {

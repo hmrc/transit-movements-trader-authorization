@@ -19,12 +19,18 @@ package controllers
 import models.requests.PrivateBetaCheck
 import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-
 import javax.inject.{Inject, Singleton}
+import models.RedactedResponse
+import reactivemongo.core.errors.ReactiveMongoException
+import repositories.PrivateBetaUserRepository
+
 import scala.concurrent.Future
 
 @Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+class PrivateBetaCheckController @Inject()(
+                                            cc: ControllerComponents,
+                                            repository: PrivateBetaUserRepository
+                                          ) extends BackendController(cc) {
 
   def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
     implicit request =>

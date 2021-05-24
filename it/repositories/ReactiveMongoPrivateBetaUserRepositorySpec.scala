@@ -77,7 +77,7 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
     }
   }
 
-  "getUser" - {
+  "getUserByUserId" - {
     "gets the user with the matching id" in {
       val user1 = domain.User(
         UserId("id1"),
@@ -96,12 +96,35 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
       repository.addUser(user1).futureValue
       repository.addUser(user2).futureValue
 
-      val result = repository.getUser(user1.userId).futureValue
+      val result = repository.getUserByUserId(user1.userId).futureValue
 
       result.value mustEqual user1
-
     }
+  }
 
+  "getUserByEori" - {
+    "gets the user with the matching eori" in {
+      val user1 = domain.User(
+        UserId("id1"),
+        "testGroupName",
+        Eori("indivUserEori1"),
+        Active
+      )
+
+      val user2 = domain.User(
+        UserId("id2"),
+        "testGroupName",
+        Eori("indivUserEori2"),
+        Active
+      )
+
+      repository.addUser(user1).futureValue
+      repository.addUser(user2).futureValue
+
+      val result = repository.getUserByEori(user1.eori).futureValue
+
+      result.value mustEqual user1
+    }
   }
 
   "getUsers" - {
@@ -153,7 +176,7 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
 
       result mustEqual true
 
-      val user2FromDb = repository.getUser(user2.userId).futureValue
+      val user2FromDb = repository.getUserByUserId(user2.userId).futureValue
 
       user2FromDb.value mustEqual user2
     }
@@ -178,15 +201,15 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
       repository.addUser(user1).futureValue
       repository.addUser(user2).futureValue
 
-      val beforeUpdate = repository.getUser(user1.userId).futureValue
+      val beforeUpdate = repository.getUserByUserId(user1.userId).futureValue
       beforeUpdate.value.status mustEqual Active
 
       val result = repository.updateUserStatus(user1.userId, Inactive).futureValue
 
       result.value.status mustBe Inactive
 
-      val user1AfterUpdate = repository.getUser(user1.userId).futureValue
-      val user2AfterUpdate = repository.getUser(user2.userId).futureValue
+      val user1AfterUpdate = repository.getUserByUserId(user1.userId).futureValue
+      val user2AfterUpdate = repository.getUserByUserId(user2.userId).futureValue
 
       user1AfterUpdate.value.status mustEqual Inactive
       user2AfterUpdate.value.status mustEqual Active
@@ -216,8 +239,8 @@ class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuit
 
       result mustEqual true
 
-      val user1AfterRemove = repository.getUser(user1.userId).futureValue
-      val user2AfterRemove = repository.getUser(user2.userId).futureValue
+      val user1AfterRemove = repository.getUserByUserId(user1.userId).futureValue
+      val user2AfterRemove = repository.getUserByUserId(user2.userId).futureValue
 
       user1AfterRemove must not be defined
       user2AfterRemove.value mustEqual user2

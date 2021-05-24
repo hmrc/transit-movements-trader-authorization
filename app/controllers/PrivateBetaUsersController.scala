@@ -86,7 +86,7 @@ class PrivateBetaUsersController @Inject() (
   def getUser(userId: UserId): Action[Unit] = Action.async(parse.empty) {
     _ =>
       repository
-        .getUser(userId)
+        .getUserByUserId(userId)
         .map {
           case Some(user) => Ok(RedactedResponse(user))
           case None =>

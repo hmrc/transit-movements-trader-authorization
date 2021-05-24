@@ -16,14 +16,16 @@
 
 package repositories
 
-import models.domain.{Status, User, UserId}
+import models.domain.{Eori, Status, User, UserId}
 
 import scala.concurrent.Future
 
 class FakePrivateBetaUserRepository extends PrivateBetaUserRepository {
   override def addUser(user: User): Future[User] = ???
 
-  override def getUser(user: UserId): Future[Option[User]] = ???
+  override def getUserByUserId(user: UserId): Future[Option[User]] = ???
+
+  override def getUserByEori(eori: Eori): Future[Option[User]] = ???
 
   override def getUsers: Future[Seq[User]] = ???
 

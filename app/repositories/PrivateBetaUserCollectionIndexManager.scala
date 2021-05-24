@@ -36,20 +36,27 @@ private[repositories] class DefaultPrivateBetaUserCollectionIndexManager @Inject
     unique = true
   )
 
+  private val eoriIndex = SimpleMongoIndexConfig(
+    key = Seq(User.Constants.FieldNames.eori -> IndexType.Ascending),
+    name = Some("eori-index"),
+    unique = true
+  )
+
   val started: Future[Unit] =
     (for {
-      coll              <- collection()
-      userIdIndexResult <- coll.indexesManager.ensure(userIdIndex)
-    } yield logger.info(IndexLogMessages.indexManagerResultLogMessage(collection.collectionName, userIdIndex.name.get, userIdIndexResult)))
-      .map(
-        _ => ()
-      )
-      .recover {
-        case e: Throwable =>
-          val message = IndexLogMessages.indexManagerFailedKey(collection.collectionName) + " failed with exception"
-          logger.error(message, e)
-          throw e
-      }
+      coll                <- collection()
+      userIdIndexResult   <- coll.indexesManager.ensure(userIdIndex)
+      eoriIndexResult     <- coll.indexesManager.ensure(eoriIndex)
+    } yield {
+      logger.info(IndexLogMessages.indexManagerResultLogMessage(collection.collectionName, userIdIndex.name.get, userIdIndexResult))
+      logger.info(IndexLogMessages.indexManagerResultLogMessage(collection.collectionName, eoriIndex.name.get, eoriIndexResult))
+      ()
+    }).recover {
+      case e: Throwable =>
+        val message = IndexLogMessages.indexManagerFailedKey(collection.collectionName) + " failed with exception"
+        logger.error(message, e)
+        throw e
+    }
 
 }
 
