@@ -6,7 +6,7 @@ import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "transit-movements-trader-authorization"
 
-val silencerVersion = "1.7.3"
+val silencerVersion = "1.7.1"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
@@ -36,11 +36,10 @@ lazy val microservice = Project(appName, file("."))
   .settings(scoverageSettings)
 
 lazy val scoverageSettings = Def.settings(
-  parallelExecution in Test                := false,
-  ScoverageKeys.coverageMinimumStmtTotal   := 90,
-  ScoverageKeys.coverageMinimumBranchTotal := 90,
-  ScoverageKeys.coverageFailOnMinimum      := true,
-  ScoverageKeys.coverageHighlighting       := true,
+  parallelExecution in Test              := false,
+  ScoverageKeys.coverageMinimumStmtTotal := 80,
+  ScoverageKeys.coverageFailOnMinimum    := true,
+  ScoverageKeys.coverageHighlighting     := true,
   ScoverageKeys.coverageExcludedFiles := Seq(
     "<empty>",
     ".*javascript.*",
