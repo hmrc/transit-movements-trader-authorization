@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3fa4fd95-a894-4808-8201-372ce7897deb",
+		"_postman_id": "d35c4ae3-feac-4368-8aae-3e713155b390",
 		"name": "Authorization_API_Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -46,6 +46,53 @@
 						"transit-movements-trader-authorization",
 						"features",
 						"private-beta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST enroll user for private beta",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eori\": \"asdf\",\n    \"name\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users"
 					]
 				}
 			},
