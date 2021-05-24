@@ -54,7 +54,17 @@ object Status {
         .read[String]
         .filter(_ == "replace")
         .andKeep((__ \ "path").read[String].filter(_ == "/status"))
-        .andKeep((__ \ "value").read[Status](DB.readsStatus))
+        .andKeep(
+          (__ \ "value")
+            .read[String]
+            .filter(
+              Seq("Active", "Inactive").contains(_)
+            )
+            .map {
+              case x if x == "Active"   => Active
+              case x if x == "Inactive" => Inactive
+            }
+        )
   }
 
 }

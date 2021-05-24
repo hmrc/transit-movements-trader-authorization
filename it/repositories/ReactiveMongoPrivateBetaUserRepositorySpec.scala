@@ -17,7 +17,7 @@
 package repositories
 
 import base.SpecBase
-import models.{domain, _}
+import models.domain
 import models.domain.{Eori, User, UserId}
 import models.domain.Status.{Active, Inactive}
 import org.scalatest.BeforeAndAfterEach
