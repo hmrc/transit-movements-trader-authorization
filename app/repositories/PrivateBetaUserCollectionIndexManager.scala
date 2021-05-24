@@ -44,9 +44,9 @@ private[repositories] class DefaultPrivateBetaUserCollectionIndexManager @Inject
 
   val started: Future[Unit] =
     (for {
-      coll                <- collection()
-      userIdIndexResult   <- coll.indexesManager.ensure(userIdIndex)
-      eoriIndexResult     <- coll.indexesManager.ensure(eoriIndex)
+      coll              <- collection()
+      userIdIndexResult <- coll.indexesManager.ensure(userIdIndex)
+      eoriIndexResult   <- coll.indexesManager.ensure(eoriIndex)
     } yield {
       logger.info(IndexLogMessages.indexManagerResultLogMessage(collection.collectionName, userIdIndex.name.get, userIdIndexResult))
       logger.info(IndexLogMessages.indexManagerResultLogMessage(collection.collectionName, eoriIndex.name.get, eoriIndexResult))

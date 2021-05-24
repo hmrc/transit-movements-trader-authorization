@@ -27,14 +27,14 @@ import repositories.PrivateBetaUserRepository
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class PrivateBetaCheckController @Inject()(
-                                            cc: ControllerComponents,
-                                            repository: PrivateBetaUserRepository
-                                          )(implicit ec: ExecutionContext) extends BackendController(cc) {
+class PrivateBetaCheckController @Inject() (
+  cc: ControllerComponents,
+  repository: PrivateBetaUserRepository
+)(implicit ec: ExecutionContext)
+    extends BackendController(cc) {
 
   def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
     implicit request =>
-
       repository.getUserByEori(request.body.eori).flatMap {
         case Some(_) => Future.successful(NoContent)
         case None    => Future.successful(NotFound)
