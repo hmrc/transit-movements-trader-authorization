@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package repositories
 
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+private[repositories] object IndexLogMessages {
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+  def indexManagerResultLogMessage(collectionName: String, indexName: String, result: Boolean): String =
+    if (result) {
+      s"[IndexManagement][$collectionName] New index created for `$indexName`"
+    } else {
+      s"[IndexManagement][$collectionName] Index already for `$indexName`"
+    }
 
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+  def indexManagerFailedKey(collectionName: String) = s"[IndexManagement][$collectionName]"
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
 }

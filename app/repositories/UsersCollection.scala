@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
-
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+package repositories
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.play.json.collection.JSONCollection
 
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
+@Singleton
+private[repositories] class UsersCollection @Inject() (mongo: ReactiveMongoApi)(implicit ec: ExecutionContext) extends (() => Future[JSONCollection]) {
+
+  val collectionName = UsersCollection.collectionName
+
+  override def apply(): Future[JSONCollection] = mongo.database.map(_.collection[JSONCollection](collectionName))
+
+}
+
+object UsersCollection {
+
+  val collectionName: String = "users"
+
 }

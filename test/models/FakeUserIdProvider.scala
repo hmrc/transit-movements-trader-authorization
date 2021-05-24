@@ -16,19 +16,8 @@
 
 package models
 
-import play.api.libs.json.{Json, OWrites}
+import models.domain.UserId
 
-sealed trait PrivateBetaCheckResponse
-object NotEnrolledInPrivateBeta extends PrivateBetaCheckResponse
-
-object PrivateBetaCheckResponse {
-
-  implicit val writes: OWrites[PrivateBetaCheckResponse] =
-    _ match {
-      case NotEnrolledInPrivateBeta =>
-        Json.obj(
-          "feature"             -> "departures-private-beta",
-          "authorizationResult" -> "NOT_AUTHORIZED"
-        )
-    }
+case class FakeUserIdProvider(private val userId: UserId) extends UserIdProvider {
+  def generate: UserId = userId
 }

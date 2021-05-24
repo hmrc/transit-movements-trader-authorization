@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package base
 
-import play.api.libs.json.{JsString, Reads, Writes}
+import org.scalatest.OptionValues
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case class Eori(value: String)
-
-object Eori {
-  implicit val writes: Writes[Eori] = eori => JsString(eori.value)
-  implicit val reads: Reads[Eori]   = _.validate[String].map(Eori(_))
-}
+trait SpecBase extends AnyFreeSpec with Matchers with ScalaFutures with IntegrationPatience with OptionValues

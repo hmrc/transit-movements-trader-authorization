@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package models.responses
 
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import play.api.libs.json.{Json, OWrites}
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+sealed trait PrivateBetaCheckResponse
+object NotEnrolledInPrivateBeta extends PrivateBetaCheckResponse
 
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+object PrivateBetaCheckResponse {
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
+  implicit val writes: OWrites[PrivateBetaCheckResponse] =
+    _ match {
+      case NotEnrolledInPrivateBeta =>
+        Json.obj(
+          "feature"             -> "departures-private-beta",
+          "authorizationResult" -> "NOT_AUTHORIZED"
+        )
+    }
 }

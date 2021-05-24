@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package models.requests
 
 import base.SpecBase
 import models.domain.Eori
-import models.requests.PrivateBetaCheck
-import play.api.http.Status
-import play.api.mvc.Result
-import play.api.test.Helpers._
-import play.api.test._
+import play.api.libs.json.Json
 
-import scala.concurrent.Future
+class PrivateBetaCheckSpec extends SpecBase {
 
-class PrivateBetaCheckControllerSpec extends SpecBase {
+  "deserialization from Json" - {
+    "when the data is in the expected shape" in {
+      val json = Json.obj(
+        "eori" -> "ASDF"
+      )
 
-  private val fakeRequest = FakeRequest("GET", "/")
-    .withBody(PrivateBetaCheck(Eori("eoriValue")))
-
-  private val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents())
-
-  "GET /features/private-beta" - {
-    "return 204" in {
-      val result: Future[Result] = controller.check()(fakeRequest)
-
-      status(result) mustBe Status.NO_CONTENT
+      json.as[PrivateBetaCheck] mustEqual PrivateBetaCheck(Eori("ASDF"))
     }
   }
+
 }

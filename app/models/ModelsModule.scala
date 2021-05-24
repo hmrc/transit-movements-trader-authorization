@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import play.api.inject._
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
-
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
-
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
-}
+class ModelsModule
+    extends SimpleModule(
+      (_, _) =>
+        Seq(
+          bind[UserIdProvider].toInstance(UserIdProviderFromUUID)
+        )
+    )

@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+trait Redact[A, B <: JsValue] {
 
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+  def redact(a: A): B
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
+}
+
+object RedactedResponse {
+
+  def apply[A](a: A)(implicit owrites: OWrites[A], redactor: Redact[A, JsObject]): JsObject =
+    redactor.redact(a)
+}
+
+object RedactSingleValue {
+
+  def apply[A](a: A)(implicit writes: Writes[A], redactor: Redact[A, JsValue]): JsValue =
+    redactor.redact(a)
 }

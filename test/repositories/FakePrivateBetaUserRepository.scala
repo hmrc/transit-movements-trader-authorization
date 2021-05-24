@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package repositories
 
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import models.domain.{Status, User, UserId}
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+class FakePrivateBetaUserRepository extends PrivateBetaUserRepository {
+  override def addUser(user: User): Future[User] = ???
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
+  override def getUser(user: UserId): Future[Option[User]] = ???
+
+  override def getUsers: Future[Seq[User]] = ???
+
+  override def updateUserStatus(userId: UserId, status: Status): Future[Option[User]] = ???
+
+  override def removeUser(userId: UserId): Future[Boolean] = ???
 }

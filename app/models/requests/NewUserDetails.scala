@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.requests
 
+import models.domain.Eori
 import play.api.libs.json.{Json, Reads}
+import models.domain.Eori.API.readsEori
 
-case class PrivateBetaCheck(eori: Eori)
+case class NewUserDetails(name: String, eori: Eori)
 
-object PrivateBetaCheck {
+object NewUserDetails {
 
-  implicit val reads: Reads[PrivateBetaCheck] = Json.reads[PrivateBetaCheck]
+  implicit val reads: Reads[NewUserDetails] = Json.reads[NewUserDetails]
+
 }

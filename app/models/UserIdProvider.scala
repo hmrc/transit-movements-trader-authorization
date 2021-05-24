@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import models.requests.PrivateBetaCheck
-import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import models.domain.UserId
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import java.util.UUID
 
-@Singleton()
-class PrivateBetaCheckController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+trait UserIdProvider {
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
-    implicit request =>
-      Future.successful(NoContent)
-  }
+  def generate: UserId
+
+}
+
+object UserIdProviderFromUUID extends UserIdProvider {
+
+  override def generate: UserId = UserId(UUID.randomUUID().toString)
+
 }
