@@ -1,12 +1,162 @@
 {
 	"info": {
-		"_postman_id": "d35c4ae3-feac-4368-8aae-3e713155b390",
+		"_postman_id": "ec5d4f80-7b12-4a88-84a7-98aa3ad82ff8",
 		"name": "Authorization_API_Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "GET user private beta enrollment",
+			"name": "POST Auth Details Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseBody = cheerio.load(pm.response.text());",
+							"var bearerToken = responseBody('td[data-session-id=\"authToken\"]').text().replace(\"Bearer\", \"\").replace(/\\s/g, \"\");",
+							"",
+							"pm.environment.set(\"bearer_token\", bearerToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "authorityId",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "redirectionUrl",
+							"value": "{{auth}}/auth-login-stub/session",
+							"type": "text"
+						},
+						{
+							"key": "credentialStrength",
+							"value": "weak",
+							"type": "text"
+						},
+						{
+							"key": "confidenceLevel",
+							"value": "50",
+							"type": "text"
+						},
+						{
+							"key": "affinityGroup",
+							"value": "Individual",
+							"type": "text"
+						},
+						{
+							"key": "enrolment[0].state",
+							"value": "Activated",
+							"type": "text"
+						},
+						{
+							"key": "enrolment[0].name",
+							"value": "HMCE-NCTS-ORG",
+							"type": "text"
+						},
+						{
+							"key": "enrolment[0].taxIdentifier[0].name",
+							"value": "VATRegNoTURN",
+							"type": "text"
+						},
+						{
+							"key": "enrolment[0].taxIdentifier[0].value",
+							"value": "1234567",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{auth}}/auth-login-stub/gg-sign-in",
+					"host": [
+						"{{auth}}"
+					],
+					"path": [
+						"auth-login-stub",
+						"gg-sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET users private beta - EMPTY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Json body is empty\", function () {",
+							"    pm.response.to.have.jsonBody({ users: [] });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST user private beta CREATE USER",
 			"event": [
 				{
 					"listen": "test",
@@ -52,7 +202,282 @@
 			"response": []
 		},
 		{
-			"name": "POST enroll user for private beta",
+			"name": "GET users private beta - CREATED ACTIVE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.expect(data.id).is.to.equal(data.userId);",
+							"});",
+							"",
+							"pm.test(\"User is Active\", function () {",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"Active\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eori\": \"asdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH users private beta - DEACTIVEATE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"User is Active\", function () {",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"Inactive\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"op\": \"replace\",\n    \"path\": \"/status\",\n    \"value\": \"Inactive\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET users private beta - SEE INACTIVE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.expect(data.id).is.to.equal(data.userId);",
+							"});",
+							"",
+							"pm.test(\"User is Active\", function () {",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"Inactive\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eori\": \"asdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH users private beta - ACTIVEATE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"User is Active\", function () {",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"Active\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"op\": \"replace\",\n    \"path\": \"/status\",\n    \"value\": \"Active\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET users private beta - SEE ACTIVE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.expect(data.id).is.to.equal(data.userId);",
+							"});",
+							"",
+							"pm.test(\"User is Active\", function () {",
+							"   var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"Active\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eori\": \"asdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST users private beta - SERVICE FOUND",
 			"event": [
 				{
 					"listen": "test",
@@ -60,7 +485,9 @@
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {",
 							"    pm.response.to.have.status(204);",
-							"});"
+							"});",
+							"",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -74,7 +501,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"eori\": \"asdf\",\n    \"name\": \"test\"\n}",
+					"raw": "{\n    \"eori\": \"asdf\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -82,7 +509,58 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users",
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE users private beta",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"pm.test(\"Status code name has string\", () => {",
+							"  pm.response.to.have.status(\"No Content\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta/users/{{userId}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -92,7 +570,56 @@
 						"transit-movements-trader-authorization",
 						"features",
 						"private-beta",
-						"users"
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST users private beta - SERVICE NOT FOUND",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eori\": \"asdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9498/transit-movements-trader-authorization/features/private-beta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9498",
+					"path": [
+						"transit-movements-trader-authorization",
+						"features",
+						"private-beta"
 					]
 				}
 			},
