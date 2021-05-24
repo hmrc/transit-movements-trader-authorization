@@ -14,33 +14,22 @@
  * limitations under the License.
  */
 
-package models.domain
+package models.requests
 
-import play.api.libs.json.{__, Json, OWrites, Reads}
+import base.SpecBase
+import models.domain.Eori
+import play.api.libs.json.Json
 
-case class Eori(value: String)
+class PrivateBetaCheckSpec extends SpecBase {
 
-object Eori {
+  "deserialization from Json" - {
+    "when the data is in the expected shape" in {
+      val json = Json.obj(
+        "eori" -> "ASDF"
+      )
 
-  object DB {
-
-    implicit val writesEori: OWrites[Eori] =
-      eori =>
-        Json.obj(
-          "eori" -> eori.value
-        )
-
-    implicit val readsEori: Reads[Eori] =
-      (__ \ User.Constants.FieldNames.eori)
-        .read[String]
-        .map(Eori(_))
-
-  }
-
-  object API {
-
-    implicit val readsEori: Reads[Eori] = __.read[String].map(Eori(_))
-
+      json.as[PrivateBetaCheck] mustEqual PrivateBetaCheck(Eori("ASDF"))
+    }
   }
 
 }

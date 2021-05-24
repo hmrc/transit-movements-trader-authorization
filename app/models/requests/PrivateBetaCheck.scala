@@ -17,13 +17,13 @@
 package models.requests
 
 import models.domain.Eori
+import models.domain.Eori.API._
 import play.api.libs.json.{Json, Reads}
 
 case class PrivateBetaCheck(eori: Eori)
 
 object PrivateBetaCheck {
 
-  implicit val reads: Reads[PrivateBetaCheck] =
-    Json.reads[Eori].map(PrivateBetaCheck(_))
+  implicit val reads: Reads[PrivateBetaCheck] = Json.reads[PrivateBetaCheck]
 
 }
