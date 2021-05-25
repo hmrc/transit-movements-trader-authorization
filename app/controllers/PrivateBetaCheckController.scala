@@ -16,13 +16,11 @@
 
 package controllers
 
+import javax.inject.{Inject, Singleton}
 import models.requests.PrivateBetaCheck
 import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import javax.inject.{Inject, Singleton}
-import models.RedactedResponse
-import reactivemongo.core.errors.ReactiveMongoException
 import repositories.PrivateBetaUserRepository
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
