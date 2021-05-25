@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import play.api.inject.{SimpleModule, bind}
+import play.api.inject.{bind, SimpleModule}
 
 class TestActionsModule
     extends SimpleModule(

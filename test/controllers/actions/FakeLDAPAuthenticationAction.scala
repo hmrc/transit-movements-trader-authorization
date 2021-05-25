@@ -28,8 +28,7 @@ class FakeLDAPAuthenticationAction extends AdminAuthenticationAction {
   implicit val ec: ExecutionContext                       = scala.concurrent.ExecutionContext.Implicits.global
   implicit val controllerComponents: ControllerComponents = stubControllerComponents()
 
-  override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] = {
+  override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] =
     BackendAuthComponentsStub().authenticatedAction()
-  }
 
 }

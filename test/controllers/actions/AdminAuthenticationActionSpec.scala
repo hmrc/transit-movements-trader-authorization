@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdminAuthenticationActionSpec extends SpecBase {
 
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val ec: ExecutionContext                       = scala.concurrent.ExecutionContext.Implicits.global
   implicit val controllerComponents: ControllerComponents = Helpers.stubControllerComponents()
 
   val fakeRequestWithToken = FakeRequest("", "").withHeaders(HeaderNames.authorisation -> "abc")
@@ -40,7 +40,9 @@ class AdminAuthenticationActionSpec extends SpecBase {
 
       val authAction = new LDAPAuthenticationAction(BackendAuthComponentsStub())
 
-      val result = authAction.authorisedTeamMember { _ => Ok("success") }(fakeRequestWithToken)
+      val result = authAction.authorisedTeamMember {
+        _ => Ok("success")
+      }(fakeRequestWithToken)
 
       status(result) mustBe OK
     }
@@ -53,7 +55,9 @@ class AdminAuthenticationActionSpec extends SpecBase {
 
       val authAction = new LDAPAuthenticationAction(BackendAuthComponentsStub(unauthorisedBehaviour))
 
-      val result = authAction.authorisedTeamMember { _ => Ok("success") }(fakeRequestWithToken)
+      val result = authAction.authorisedTeamMember {
+        _ => Ok("success")
+      }(fakeRequestWithToken)
 
       status(result) mustBe Status.UNAUTHORIZED
     }
@@ -66,7 +70,9 @@ class AdminAuthenticationActionSpec extends SpecBase {
 
       val authAction = new LDAPAuthenticationAction(BackendAuthComponentsStub(forbiddenBehaviour))
 
-      val result = authAction.authorisedTeamMember { _ => Ok("success") }(fakeRequestWithToken)
+      val result = authAction.authorisedTeamMember {
+        _ => Ok("success")
+      }(fakeRequestWithToken)
 
       status(result) mustBe Status.FORBIDDEN
     }
