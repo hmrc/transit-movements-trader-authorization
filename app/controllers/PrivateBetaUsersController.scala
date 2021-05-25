@@ -16,29 +16,31 @@
 
 package controllers
 
+import controllers.actions.AdminAuthenticationAction
 import logging.Logging
 import models.domain.{User, UserId}
 import models.requests.NewUserDetails
-import models.{domain, RedactedResponse, UserIdProvider}
+import models.{RedactedResponse, UserIdProvider, domain}
 import models.domain.Status.API._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, ControllerComponents}
 import reactivemongo.core.errors.ReactiveMongoException
 import repositories.PrivateBetaUserRepository
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-
 import javax.inject.Inject
+
 import scala.concurrent.ExecutionContext
 
 class PrivateBetaUsersController @Inject() (
   cc: ControllerComponents,
   repository: PrivateBetaUserRepository,
-  userIdProvider: UserIdProvider
+  userIdProvider: UserIdProvider,
+  adminAuthenticationAction: AdminAuthenticationAction
 )(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with Logging {
 
-  def add(): Action[NewUserDetails] = Action.async(parse.json[NewUserDetails]) {
+  def add(): Action[NewUserDetails] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.json[NewUserDetails]) {
     request =>
       val user: User = User(userIdProvider.generate, request.body.name, request.body.eori, domain.Status.Active)
 
@@ -61,7 +63,7 @@ class PrivateBetaUsersController @Inject() (
         }
   }
 
-  def getUsers(): Action[Unit] = Action.async(parse.empty) {
+  def getUsers(): Action[Unit] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.empty) {
     _ =>
       repository.getUsers
         .map {
@@ -83,7 +85,7 @@ class PrivateBetaUsersController @Inject() (
         }
   }
 
-  def getUser(userId: UserId): Action[Unit] = Action.async(parse.empty) {
+  def getUser(userId: UserId): Action[Unit] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.empty) {
     _ =>
       repository
         .getUserByUserId(userId)
@@ -103,7 +105,7 @@ class PrivateBetaUsersController @Inject() (
         }
   }
 
-  def updateUserStatus(userId: UserId): Action[domain.Status] = Action.async(parse.json[domain.Status]) {
+  def updateUserStatus(userId: UserId): Action[domain.Status] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.json[domain.Status]) {
     request =>
       repository
         .updateUserStatus(userId, request.body)
@@ -121,7 +123,7 @@ class PrivateBetaUsersController @Inject() (
         }
   }
 
-  def delete(userId: UserId): Action[Unit] = Action.async(parse.empty) {
+  def delete(userId: UserId): Action[Unit] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.empty) {
     _ =>
       repository
         .removeUser(userId)

@@ -20,9 +20,8 @@ import play.api.mvc.{ActionBuilder, AnyContent, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.internalauth.client.AuthenticatedRequest
 import uk.gov.hmrc.internalauth.client.test.BackendAuthComponentsStub
-import play.api.mvc.Results.Ok
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class FakeLDAPAuthenticationAction extends AdminAuthenticationAction {
 
@@ -30,7 +29,7 @@ class FakeLDAPAuthenticationAction extends AdminAuthenticationAction {
   implicit val controllerComponents: ControllerComponents = stubControllerComponents()
 
   override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] = {
-    BackendAuthComponentsStub().authenticatedAction(Future.successful(Ok))
+    BackendAuthComponentsStub().authenticatedAction()
   }
 
 }
