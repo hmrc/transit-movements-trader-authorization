@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.actions
+import controllers.actions.UserAuthenticationAction
+import play.api.inject._
 
-import play.api.inject.{bind, SimpleModule}
-
-class ActionsModule
+class TestActionsModule
     extends SimpleModule(
       (_, _) =>
         Seq(
-          bind[UserAuthenticationAction].to[DefaultUserAuthenticationAction],
-          bind[AdminAuthenticationAction].to[LDAPAuthenticationAction]
+          bind[UserAuthenticationAction].toInstance(FakeUserAuthenticationAction)
         )
     )

@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.actions
+import controllers.actions.UserAuthenticationAction
+import play.api.mvc.{Request, Result}
 
-import play.api.inject.{bind, SimpleModule}
+import scala.concurrent.ExecutionContext.global
+import scala.concurrent.{ExecutionContext, Future}
 
-class ActionsModule
-    extends SimpleModule(
-      (_, _) =>
-        Seq(
-          bind[UserAuthenticationAction].to[DefaultUserAuthenticationAction],
-          bind[AdminAuthenticationAction].to[LDAPAuthenticationAction]
-        )
-    )
+object FakeUserAuthenticationAction extends UserAuthenticationAction {
+
+  override protected def filter[A](request: Request[A]): Future[Option[Result]] =
+    Future.successful(None)
+
+  override protected def executionContext: ExecutionContext = global
+}

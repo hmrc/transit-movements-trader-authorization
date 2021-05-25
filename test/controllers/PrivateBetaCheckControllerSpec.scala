@@ -17,22 +17,31 @@
 package controllers
 
 import base.SpecBase
+import controllers.actions.UserAuthenticationAction
 import models.domain.Status.Active
 import models.domain.{Eori, User, UserId}
 import models.requests.PrivateBetaCheck
 import play.api.http.Status
-import play.api.mvc.Result
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import play.api.test._
 import repositories.FakePrivateBetaUserRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PrivateBetaCheckControllerSpec extends SpecBase {
 
   private val fakeRequest = FakeRequest("GET", "/")
     .withBody(PrivateBetaCheck(Eori("eoriValue")))
+
+  private val fakeAuthFilter = new UserAuthenticationAction {
+
+    override protected def filter[A](request: Request[A]): Future[Option[Result]] =
+      Future.successful(None)
+
+    override protected def executionContext: ExecutionContext = global
+  }
 
   "GET /features/private-beta" - {
     "returns 204 when there is a matching user eori" in {
@@ -44,7 +53,7 @@ class PrivateBetaCheckControllerSpec extends SpecBase {
           Future.successful(Some(user))
       }
 
-      val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
+      val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository, fakeAuthFilter)
 
       val result: Future[Result] = controller.check()(fakeRequest)
 
@@ -58,7 +67,7 @@ class PrivateBetaCheckControllerSpec extends SpecBase {
           Future.successful(None)
       }
 
-      val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository)
+      val controller = new PrivateBetaCheckController(Helpers.stubControllerComponents(), repository, fakeAuthFilter)
 
       val result: Future[Result] = controller.check()(fakeRequest)
 

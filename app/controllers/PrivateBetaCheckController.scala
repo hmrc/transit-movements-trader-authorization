@@ -16,9 +16,14 @@
 
 package controllers
 
+import controllers.actions.UserAuthenticationAction
 import javax.inject.{Inject, Singleton}
 import models.requests.PrivateBetaCheck
 import play.api.mvc.{Action, ControllerComponents}
+import repositories.PrivateBetaUserRepository
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+
+import javax.inject.{Inject, Singleton}
 import repositories.PrivateBetaUserRepository
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -27,11 +32,12 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton()
 class PrivateBetaCheckController @Inject() (
   cc: ControllerComponents,
-  repository: PrivateBetaUserRepository
+  repository: PrivateBetaUserRepository,
+  userRequestAuthentication: UserAuthenticationAction
 )(implicit ec: ExecutionContext)
     extends BackendController(cc) {
 
-  def check(): Action[PrivateBetaCheck] = Action.async(parse.json[PrivateBetaCheck]) {
+  def check(): Action[PrivateBetaCheck] = (Action andThen userRequestAuthentication).async(parse.json[PrivateBetaCheck]) {
     implicit request =>
       repository.getUserByEori(request.body.eori).flatMap {
         case Some(_) => Future.successful(NoContent)
