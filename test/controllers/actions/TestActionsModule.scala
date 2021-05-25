@@ -25,3 +25,4 @@ class TestActionsModule
           bind[AdminAuthenticationAction].to[FakeLDAPAuthenticationAction]
         )
     )
+  

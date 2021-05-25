@@ -20,7 +20,7 @@ import controllers.actions.AdminAuthenticationAction
 import logging.Logging
 import models.domain.{User, UserId}
 import models.requests.NewUserDetails
-import models.{RedactedResponse, UserIdProvider, domain}
+import models.{domain, RedactedResponse, UserIdProvider}
 import models.domain.Status.API._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, ControllerComponents}
@@ -105,23 +105,24 @@ class PrivateBetaUsersController @Inject() (
         }
   }
 
-  def updateUserStatus(userId: UserId): Action[domain.Status] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.json[domain.Status]) {
-    request =>
-      repository
-        .updateUserStatus(userId, request.body)
-        .map {
-          case Some(user) => Ok(RedactedResponse(user))
-          case None       => NotFound
-        }
-        .recover {
-          case e: ReactiveMongoException =>
-            logger.error("[UpdateUserStatusError] Encountered database exception", e)
-            InternalServerError
-          case e =>
-            logger.error("[UpdateUserStatusError] Encountered exception", e)
-            InternalServerError
-        }
-  }
+  def updateUserStatus(userId: UserId): Action[domain.Status] =
+    (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.json[domain.Status]) {
+      request =>
+        repository
+          .updateUserStatus(userId, request.body)
+          .map {
+            case Some(user) => Ok(RedactedResponse(user))
+            case None       => NotFound
+          }
+          .recover {
+            case e: ReactiveMongoException =>
+              logger.error("[UpdateUserStatusError] Encountered database exception", e)
+              InternalServerError
+            case e =>
+              logger.error("[UpdateUserStatusError] Encountered exception", e)
+              InternalServerError
+          }
+    }
 
   def delete(userId: UserId): Action[Unit] = (Action andThen adminAuthenticationAction.authorisedTeamMember).async(parse.empty) {
     _ =>

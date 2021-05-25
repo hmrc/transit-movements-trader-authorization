@@ -27,7 +27,7 @@ trait AdminAuthenticationAction {
   def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent]
 }
 
-class LDAPAuthenticationAction @Inject()(internalAuth: BackendAuthComponents) extends AdminAuthenticationAction {
+class LDAPAuthenticationAction @Inject() (internalAuth: BackendAuthComponents) extends AdminAuthenticationAction {
 
   private val permission = Predicate.Permission(
     Resource(
@@ -45,5 +45,3 @@ class LDAPAuthenticationAction @Inject()(internalAuth: BackendAuthComponents) ex
     )
 
 }
-
-
