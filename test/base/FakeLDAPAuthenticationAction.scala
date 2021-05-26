@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.actions
-
+import controllers.actions.AdminAuthenticationAction
 import play.api.mvc.{ActionBuilder, AnyContent, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.internalauth.client.AuthenticatedRequest

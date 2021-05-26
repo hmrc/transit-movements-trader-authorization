@@ -17,18 +17,20 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions.FakeLDAPAuthenticationAction
+import controllers.actions.AdminAuthenticationAction
 import models.domain.{Eori, Status, User, UserId}
 import models.requests.NewUserDetails
 import models.{FakeUserIdProvider, UserIdProvider}
 import play.api.http.{Status => HttpStatus}
 import play.api.libs.json._
-import play.api.mvc.Result
+import play.api.mvc.{ActionBuilder, AnyContent, ControllerComponents, Result}
 import play.api.test.Helpers._
 import play.api.test._
 import reactivemongo.api.commands.LastError
 import repositories.FakePrivateBetaUserRepository
 import uk.gov.hmrc.http.HeaderNames
+import uk.gov.hmrc.internalauth.client.AuthenticatedRequest
+import uk.gov.hmrc.internalauth.client.test.BackendAuthComponentsStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -46,7 +48,13 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
       User.Constants.FieldNames.status -> user.status.toString
     )
 
-  private val identifierAction = new FakeLDAPAuthenticationAction
+  implicit val controllerComponents: ControllerComponents = stubControllerComponents()
+
+  private val identifierAction = new AdminAuthenticationAction {
+    override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] = {
+      BackendAuthComponentsStub().authenticatedAction()
+    }
+  }
 
   "add" - {
 
