@@ -51,9 +51,9 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
   implicit val controllerComponents: ControllerComponents = stubControllerComponents()
 
   private val identifierAction = new AdminAuthenticationAction {
-    override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] = {
+
+    override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] =
       BackendAuthComponentsStub().authenticatedAction()
-    }
   }
 
   "add" - {
