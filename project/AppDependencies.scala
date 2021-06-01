@@ -9,8 +9,8 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "bootstrap-backend-play-28"      % "5.3.0",
     "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.11-play28",
     "org.reactivemongo" %% "reactivemongo-play-json-compat" % "0.20.11-play28",
-    "com.typesafe.play" %% "play-iteratees"                 % "2.6.1"
-    //    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.50.0",
+    "com.typesafe.play" %% "play-iteratees"                 % "2.6.1",
+    "uk.gov.hmrc"       %% "internal-auth-client-play-27"   % "0.12.0"
   )
 
   val test = Seq(

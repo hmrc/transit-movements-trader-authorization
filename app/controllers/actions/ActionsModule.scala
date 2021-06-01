@@ -16,12 +16,13 @@
 
 package controllers.actions
 
-import play.api.inject._
+import play.api.inject.{bind, SimpleModule}
 
 class ActionsModule
     extends SimpleModule(
       (_, _) =>
         Seq(
-          bind[UserAuthenticationAction].to[DefaultUserAuthenticationAction]
+          bind[UserAuthenticationAction].to[DefaultUserAuthenticationAction],
+          bind[AdminAuthenticationAction].to[LDAPAuthenticationAction]
         )
     )

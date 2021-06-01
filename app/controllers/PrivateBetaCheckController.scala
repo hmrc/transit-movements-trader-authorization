@@ -17,12 +17,16 @@
 package controllers
 
 import controllers.actions.UserAuthenticationAction
+import javax.inject.{Inject, Singleton}
 import models.requests.PrivateBetaCheck
 import play.api.mvc.{Action, ControllerComponents}
 import repositories.PrivateBetaUserRepository
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
+import repositories.PrivateBetaUserRepository
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()

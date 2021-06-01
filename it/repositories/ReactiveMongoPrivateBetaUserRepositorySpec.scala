@@ -31,7 +31,7 @@ import repositories.UsersCollection.collectionName
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuite with BeforeAndAfterEach with GuiceOneAppPerSuite with FailOnUnindexedQueries {
+class ReactiveMongoPrivateBetaUserRepositorySpec extends SpecBase with MongoSuite with BeforeAndAfterEach with GuiceOneAppPerSuite {
 
   private def deleteAllDocumentsFromCollection(): Future[Unit] =
     database

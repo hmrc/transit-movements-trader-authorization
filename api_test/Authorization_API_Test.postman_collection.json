@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ec5d4f80-7b12-4a88-84a7-98aa3ad82ff8",
+		"_postman_id": "ec9c9cea-9997-485e-9e8e-e0ab1aba1553",
 		"name": "Authorization_API_Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -128,7 +128,13 @@
 			},
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -175,7 +181,13 @@
 			},
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"eori\": \"asdf\"\n}",
@@ -230,7 +242,13 @@
 			},
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"eori\": \"asdf\"\n}",
@@ -282,7 +300,13 @@
 			},
 			"request": {
 				"method": "PATCH",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{ \n    \"op\": \"replace\",\n    \"path\": \"/status\",\n    \"value\": \"Inactive\"\n}",
@@ -391,7 +415,13 @@
 			},
 			"request": {
 				"method": "PATCH",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{ \n    \"op\": \"replace\",\n    \"path\": \"/status\",\n    \"value\": \"Active\"\n}",
@@ -448,7 +478,13 @@
 			},
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"eori\": \"asdf\"\n}",
@@ -498,7 +534,13 @@
 			},
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"eori\": \"asdf\"\n}",
@@ -549,7 +591,13 @@
 			},
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -599,7 +647,13 @@
 			},
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "abc",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"eori\": \"asdf\"\n}",

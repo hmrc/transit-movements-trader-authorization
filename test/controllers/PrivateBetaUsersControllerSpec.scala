@@ -17,16 +17,20 @@
 package controllers
 
 import base.SpecBase
+import controllers.actions.AdminAuthenticationAction
 import models.domain.{Eori, Status, User, UserId}
 import models.requests.NewUserDetails
 import models.{FakeUserIdProvider, UserIdProvider}
 import play.api.http.{Status => HttpStatus}
 import play.api.libs.json._
-import play.api.mvc.Result
+import play.api.mvc.{ActionBuilder, AnyContent, ControllerComponents, Result}
 import play.api.test.Helpers._
 import play.api.test._
 import reactivemongo.api.commands.LastError
 import repositories.FakePrivateBetaUserRepository
+import uk.gov.hmrc.http.HeaderNames
+import uk.gov.hmrc.internalauth.client.AuthenticatedRequest
+import uk.gov.hmrc.internalauth.client.test.BackendAuthComponentsStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -44,10 +48,19 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
       User.Constants.FieldNames.status -> user.status.toString
     )
 
+  implicit val controllerComponents: ControllerComponents = stubControllerComponents()
+
+  private val identifierAction = new AdminAuthenticationAction {
+
+    override def authorisedTeamMember: ActionBuilder[AuthenticatedRequest, AnyContent] =
+      BackendAuthComponentsStub().authenticatedAction()
+  }
+
   "add" - {
 
     val newUserRequest: FakeRequest[NewUserDetails] = FakeRequest("POST", routes.PrivateBetaUsersController.add().url)
       .withBody(NewUserDetails("userName", Eori("userEori")))
+      .withHeaders(HeaderNames.authorisation -> "abc")
 
     val user = User(UserId("userId"), "userName", Eori("userName"), Status.Active)
 
@@ -59,7 +72,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def addUser(user: User): Future[User] = Future.successful(user)
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, userIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, userIdProvider, identifierAction)
 
       val result: Future[Result] = controller.add()(newUserRequest)
 
@@ -74,7 +87,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def addUser(user: User): Future[User] = Future.failed(LastError(false, None, None, None, 0, None, false, None, None, false, None, None))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, userIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, userIdProvider, identifierAction)
 
       val result: Future[Result] = controller.add()(newUserRequest)
 
@@ -89,13 +102,14 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
     val getUsersRequest: FakeRequest[Unit] =
       FakeRequest("GET", routes.PrivateBetaUsersController.getUsers().url)
         .withBody(())
+        .withHeaders(HeaderNames.authorisation -> "abc")
 
     "returns 200 when there is a matching user" in {
       val repository = new FakePrivateBetaUserRepository {
         override def getUsers: Future[Seq[User]] = Future.successful(Seq(user1, user2))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.getUsers()(getUsersRequest)
 
@@ -110,7 +124,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def getUsers: Future[Seq[User]] = Future.successful(Seq.empty[User])
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.getUsers()(getUsersRequest)
 
@@ -125,7 +139,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def getUsers: Future[Seq[User]] = Future.failed(new Exception("DB failure"))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result: Future[Result] = controller.getUsers()(getUsersRequest)
 
@@ -138,13 +152,14 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
     val getUserRequest: FakeRequest[Unit] =
       FakeRequest("GET", routes.PrivateBetaUsersController.getUser(user.userId).url)
         .withBody(())
+        .withHeaders(HeaderNames.authorisation -> "abc")
 
     "returns 200 when there is a matching user" in {
       val repository = new FakePrivateBetaUserRepository {
         override def getUserByUserId(userId: UserId): Future[Option[User]] = Future.successful(Some(user))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.getUser(user.userId)(getUserRequest)
 
@@ -157,7 +172,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def getUserByUserId(userId: UserId): Future[Option[User]] = Future.successful(None)
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.getUser(UserId("abc"))(getUserRequest)
 
@@ -169,7 +184,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def getUserByUserId(userId: UserId): Future[Option[User]] = Future.failed(new Exception("DB failure"))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result: Future[Result] = controller.getUser(user.userId)(getUserRequest)
 
@@ -184,13 +199,14 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
     val updateUserStatusRequest: FakeRequest[Status] =
       FakeRequest("PATCH", routes.PrivateBetaUsersController.updateUserStatus(userId).url)
         .withBody(Status.Inactive)
+        .withHeaders(HeaderNames.authorisation -> "abc")
 
     "returns 200 when there is a matching user that has been deleted" in {
       val repository = new FakePrivateBetaUserRepository {
         override def updateUserStatus(userId: UserId, status: Status): Future[Option[User]] = Future.successful(Some(user.copy(status = Status.Inactive)))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.updateUserStatus(userId)(updateUserStatusRequest)
 
@@ -204,7 +220,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def updateUserStatus(userId: UserId, status: Status): Future[Option[User]] = Future.successful(None)
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.updateUserStatus(UserId("abc"))(updateUserStatusRequest)
 
@@ -216,7 +232,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def updateUserStatus(userId: UserId, status: Status): Future[Option[User]] = Future.failed(new Exception("DB failure"))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result: Future[Result] = controller.updateUserStatus(userId)(updateUserStatusRequest)
 
@@ -231,13 +247,14 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
     val deleteRequest: FakeRequest[Unit] =
       FakeRequest("DELETE", routes.PrivateBetaUsersController.delete(userId).url)
         .withBody(())
+        .withHeaders(HeaderNames.authorisation -> "abc")
 
     "returns 204 when there is a matching user that has been deleted" in {
       val repository = new FakePrivateBetaUserRepository {
         override def removeUser(userId: UserId): Future[Boolean] = Future.successful(true)
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.delete(userId)(deleteRequest)
 
@@ -249,7 +266,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def removeUser(userId: UserId): Future[Boolean] = Future.successful(false)
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result = controller.delete(UserId("abc"))(deleteRequest)
 
@@ -261,7 +278,7 @@ class PrivateBetaUsersControllerSpec extends SpecBase {
         override def removeUser(userId: UserId): Future[Boolean] = Future.failed(new Exception("DB failure"))
       }
 
-      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider)
+      val controller = new PrivateBetaUsersController(Helpers.stubControllerComponents(), repository, unimplementedUserIdProvider, identifierAction)
 
       val result: Future[Result] = controller.delete(userId)(deleteRequest)
 
